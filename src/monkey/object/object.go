@@ -9,6 +9,7 @@ const (
 	BOOLEAN_OBJ      = "BOOLEAN"
 	NULL_OBJ         = "NULL"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
+	ERROR_OBJ        = "ERROR"
 )
 
 type Object interface {
@@ -41,3 +42,29 @@ type ReturnValue struct {
 
 func (rv *ReturnValue) Inspect() string  { return rv.Value.Inspect() }
 func (rv *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
+
+type Error struct {
+	Message string
+}
+
+func (e *Error) Inspect() string  { return "ERROR: " + e.Message }
+func (e *Error) Type() ObjectType { return ERROR_OBJ }
+
+type Environment struct {
+	store map[string]Object
+}
+
+func NewEnvironment() *Environment {
+	s := make(map[string]Object)
+	return &Environment{store: s}
+}
+
+func (e *Environment) Get(name string) (Object, bool) {
+	obj, ok := e.store[name]
+	return obj, ok
+}
+
+func (e *Environment) Set(name string, value Object) Object {
+	e.store[name] = value
+	return value
+}
