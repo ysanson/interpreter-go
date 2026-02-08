@@ -301,3 +301,25 @@ func (hl *HashLiteral) String() string {
 	out.WriteRune('}')
 	return out.String()
 }
+
+type MacroLiteral struct {
+	Token      token.Token
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (ml *MacroLiteral) expressionNode()      {}
+func (ml *MacroLiteral) TokenLiteral() string { return ml.Token.Literal }
+func (ml *MacroLiteral) String() string {
+	var out bytes.Buffer
+	params := []string{}
+	for _, p := range ml.Parameters {
+		params = append(params, p.String())
+	}
+	out.WriteString(ml.TokenLiteral())
+	out.WriteRune('(')
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteRune(')')
+	out.WriteString(ml.Body.String())
+	return out.String()
+}
