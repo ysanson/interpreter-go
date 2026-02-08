@@ -71,6 +71,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return evalIndexExpression(left, index)
 	case *ast.CallExpression:
+		if n.Function.TokenLiteral() == "quote" {
+			return quote(n.Arguments[0], env)
+		}
 		function := Eval(n.Function, env)
 		if isError(function) {
 			return function
